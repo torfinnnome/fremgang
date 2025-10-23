@@ -1,0 +1,574 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+:root {
+  --background: 37 71% 92%; /* #F9EEDD - Very light orange */
+  --foreground: 30 30% 25%; /* Dark Warm Brown for text */
+
+  --muted: 37 50% 85%;
+  --muted-foreground: 30 25% 45%;
+
+  --popover: 37 80% 95%;
+  --popover-foreground: 30 30% 25%;
+
+  --card: 37 80% 95%; /* Slightly lighter/more saturated than main bg */
+  --card-foreground: 30 30% 25%;
+
+  --border: 37 40% 80%; /* Subtle border */
+  --input: 37 50% 88%;
+
+  --primary: 34 100% 60%; /* #FFB347 - Light and warm orange */
+  --primary-foreground: 35 100% 98%; /* White/very light cream for text on primary */
+
+  --secondary: 43 60% 75%; /* Lighter muted yellow for secondary elements */
+  --secondary-foreground: 30 30% 25%;
+
+  --accent: 43 56% 58%; /* #D4A753 - Muted yellow */
+  --accent-foreground: 30 30% 25%; /* Darker color for text on accent */
+
+  --destructive: 0 70% 50%;
+  --destructive-foreground: 0 0% 100%;
+
+  --ring: 34 100% 70%; /* Slightly lighter primary for focus rings */
+
+  --radius: 0.5rem;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+body.dark {
+  /* Define dark theme based on current light theme, inverted and adjusted */
+  --background: 30 10% 15%; /* Dark warm gray/brown */
+  --foreground: 35 20% 85%; /* Light warm gray */
+
+  --muted: 30 10% 25%;
+  --muted-foreground: 35 15% 65%;
+
+  --popover: 30 10% 12%;
+  --popover-foreground: 35 20% 85%;
+
+  --card: 30 10% 20%;
+  --card-foreground: 35 20% 85%;
+
+  --border: 30 10% 30%;
+  --input: 30 10% 30%;
+
+  --primary: 34 100% 60%; /* Keep primary vibrant */
+  --primary-foreground: 30 30% 15%;
+
+  --secondary: 43 50% 40%;
+  --secondary-foreground: 35 20% 85%;
+
+  --accent: 43 56% 58%; /* Keep accent vibrant */
+  --accent-foreground: 30 30% 15%;
+
+  --destructive: 0 60% 45%;
+  --destructive-foreground: 0 0% 98%;
+
+  --ring: 34 100% 65%;
+
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+h4 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.card {
+    background-color: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 100%;
+}
+
+button {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+button:hover:not(:disabled) {
+  background-color: hsl(var(--primary) / 0.85);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+select {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.95rem;
+}
+
+select:hover {
+  background-color: hsl(var(--primary) / 0.85);
+}
+
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"] {
+  background-color: hsl(var(--input));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.3);
+}
+
+a {
+  color: hsl(var(--secondary));
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Activity Progress Responsive Styles */
+.activity-progress-cards-container {
+  display: none;
+}
+
+.activity-progress-table-container {
+  display: block;
+  overflow-x: auto;
+}
+
+.activity-progress-table-container table {
+  min-width: 900px;
+}
+
+/* Tablet - keep table but make it scrollable */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .activity-progress-table-container table {
+    font-size: 0.9rem;
+  }
+
+  .activity-progress-table-container th,
+  .activity-progress-table-container td {
+    padding: 0.4rem !important;
+  }
+}
+
+/* Mobile - switch to cards */
+@media (max-width: 768px) {
+  .activity-progress-table-container {
+    display: none;
+  }
+
+  .activity-progress-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .activity-card {
+    background-color: hsl(var(--muted));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    padding: 1rem;
+  }
+
+  .activity-card h4 {
+    color: hsl(var(--foreground));
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .activity-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .activity-card-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+  }
+
+  .activity-card-label {
+    font-weight: 600;
+    color: hsl(var(--muted-foreground));
+  }
+}
+
+/* Dashboard Layout Styles */
+.dashboard-container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.full-width-card {
+  grid-column: 1 / -1;
+  max-width: 100%;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Tablet breakpoint */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 450px));
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
+}
+
+/* Better sizing for large screens */
+@media (min-width: 1200px) {
+  .dashboard-container {
+    padding: 2rem;
+  }
+
+  .card {
+    padding: 1.75rem;
+  }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 0.5rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .event-list-card {
+    grid-column: 1;
+  }
+
+  .button-group {
+    gap: 0.5rem;
+  }
+
+  .button-group button {
+    flex: 1 1 auto;
+    min-width: fit-content;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* Charts Component Styles */
+.charts-container {
+  width: 100%;
+}
+
+.chart-select-container {
+  margin-bottom: 1rem;
+}
+
+.chart-controls {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.chart-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chart-control-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: hsl(var(--foreground));
+}
+
+.chart-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.chart-display {
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .chart-controls {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .chart-control-group {
+    width: 100%;
+  }
+
+  .chart-buttons button {
+    flex: 1 1 auto;
+    min-width: fit-content;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+/* Header Styles */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .app-title {
+    font-size: 1.25rem;
+  }
+
+  .header-controls {
+    gap: 0.5rem;
+  }
+
+  .header-controls button,
+  .header-controls select {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem !important;
+  }
+}
+
+/* Event List Styles */
+.event-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.event-list-table th,
+.event-list-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid hsl(var(--border));
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.event-list-table th {
+  font-weight: 600;
+}
+
+.event-list-table .col-activity {
+  width: auto;
+}
+
+.event-list-table .col-reps {
+  width: 100px;
+}
+
+.event-list-table .col-datetime {
+  width: 200px;
+}
+
+.event-list-table .col-actions {
+  width: 150px;
+}
+
+.datetime-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.date-part {
+  font-weight: 500;
+}
+
+.time-part {
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-small {
+  padding: 0.4rem 0.8rem;
+}
+
+/* Editing row */
+.editing-row td {
+  padding: 0.5rem;
+}
+
+.editing-row input,
+.editing-row select {
+  font-size: 0.9rem;
+}
+
+/* Mobile EventList */
+@media (max-width: 768px) {
+  .event-list-table {
+    table-layout: auto;
+  }
+
+  .event-list-table th,
+  .event-list-table td {
+    padding: 0.5rem 0.35rem;
+    font-size: 0.85rem;
+  }
+
+  .btn-small {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .datetime-display {
+    gap: 0.15rem;
+  }
+
+  .date-part {
+    font-size: 0.85rem;
+  }
+
+  .time-part {
+    font-size: 0.8rem;
+  }
+}
+
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}

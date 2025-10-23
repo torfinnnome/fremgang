@@ -1,0 +1,19 @@
+{
+  "name": "fremgang-root",
+  "version": "1.0.0",
+  "description": "Root package for the Fremgang application",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "npm install --prefix server && npm install --prefix client-svelte",
+    "start": "npm start --prefix server",
+    "start:dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client-svelte\"",
+    "build": "npm run build --prefix client-svelte && npm run build --prefix server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}
