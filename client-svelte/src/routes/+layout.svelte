@@ -5,7 +5,7 @@
   import { goto } from '$app/navigation';
   import { theme, isAuthenticated } from '$lib/stores';
   import { token } from '$lib/auth';
-  import * as m from '$lib/paraglide/messages';
+  import { m } from '$lib/paraglide/messages.js';
 
   onMount(() => {
     const storedToken = localStorage.getItem('token');
@@ -13,6 +13,7 @@
       token.set(storedToken);
     }
 
+    console.log('token in layout:', token);
     const unsubscribe = token.subscribe(value => {
       isAuthenticated.set(!!value);
       if (!value) {
@@ -23,6 +24,7 @@
     return unsubscribe;
   });
 
+  console.log('theme in layout:', theme);
   theme.subscribe(value => {
     if (typeof document !== 'undefined') {
       document.body.className = value;
@@ -32,7 +34,7 @@
 </script>
 
 <svelte:head>
-  <title>{m.appName()}</title>
+  <title>{$m.appName}</title>
 </svelte:head>
 
 {#if $isAuthenticated}

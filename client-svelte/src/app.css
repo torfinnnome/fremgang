@@ -38,34 +38,34 @@
 }
 
 :root {
-  --background: 37 71% 92%; /* #F9EEDD - Very light orange */
-  --foreground: 30 30% 25%; /* Dark Warm Brown for text */
+  --background: 37 71% 96%; /* Even lighter, softer background */
+  --foreground: 30 35% 15%; /* Much darker text for better contrast */
 
-  --muted: 37 50% 85%;
-  --muted-foreground: 30 25% 45%;
+  --muted: 37 50% 90%;
+  --muted-foreground: 30 30% 30%; /* Darker for better readability */
 
-  --popover: 37 80% 95%;
-  --popover-foreground: 30 30% 25%;
+  --popover: 37 80% 98%;
+  --popover-foreground: 30 35% 15%;
 
-  --card: 37 80% 95%; /* Slightly lighter/more saturated than main bg */
-  --card-foreground: 30 30% 25%;
+  --card: 0 0% 100%; /* Pure white cards for maximum contrast */
+  --card-foreground: 30 35% 15%;
 
-  --border: 37 40% 80%; /* Subtle border */
-  --input: 37 50% 88%;
+  --border: 37 40% 75%; /* Slightly darker borders for visibility */
+  --input: 0 0% 100%; /* White inputs */
 
-  --primary: 34 100% 60%; /* #FFB347 - Light and warm orange */
-  --primary-foreground: 35 100% 98%; /* White/very light cream for text on primary */
+  --primary: 34 100% 50%; /* Slightly darker, more vibrant orange */
+  --primary-foreground: 0 0% 100%; /* Pure white text on buttons */
 
-  --secondary: 43 60% 75%; /* Lighter muted yellow for secondary elements */
-  --secondary-foreground: 30 30% 25%;
+  --secondary: 43 60% 65%; /* Slightly darker secondary */
+  --secondary-foreground: 30 35% 15%;
 
-  --accent: 43 56% 58%; /* #D4A753 - Muted yellow */
-  --accent-foreground: 30 30% 25%; /* Darker color for text on accent */
+  --accent: 43 56% 50%; /* Darker accent for better contrast */
+  --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 70% 50%;
+  --destructive: 0 70% 45%;
   --destructive-foreground: 0 0% 100%;
 
-  --ring: 34 100% 70%; /* Slightly lighter primary for focus rings */
+  --ring: 34 100% 50%; /* Match primary for focus rings */
 
   --radius: 0.5rem;
 }
@@ -77,8 +77,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 18px; /* Increased from 16px */
+  line-height: 1.7; /* Increased from 1.5 for better readability */
   background-color: hsl(var(--background)) !important;
   color: hsl(var(--foreground)) !important;
 }
@@ -120,24 +120,27 @@ body.dark {
 
 h3 {
   margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-  font-weight: 600;
+  margin-bottom: 1.25rem;
+  font-size: 1.5rem; /* Increased from 1.25rem */
+  font-weight: 700; /* Bolder */
+  line-height: 1.4;
 }
 
 h4 {
   margin-top: 0;
-  margin-bottom: 0.75rem;
-  font-size: 1.1rem;
-  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 1.25rem; /* Increased from 1.1rem */
+  font-weight: 700; /* Bolder */
+  line-height: 1.4;
 }
 
 .card {
     background-color: hsl(var(--card));
     color: hsl(var(--card-foreground));
-    padding: 1.5rem;
+    padding: 2rem; /* Increased from 1.5rem */
     border-radius: var(--radius);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08); /* Softer shadow */
+    border: 2px solid hsl(var(--border)); /* Added border for clarity */
     max-width: 100%;
 }
 
@@ -146,11 +149,12 @@ button {
   color: hsl(var(--primary-foreground));
   border: none;
   border-radius: var(--radius);
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem; /* Increased from 0.5rem 1rem */
   cursor: pointer;
   transition: background-color 0.3s ease;
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 1.05rem; /* Increased from 0.95rem */
+  font-weight: 600; /* Increased from 500 */
+  min-height: 44px; /* Touch-friendly minimum size */
 }
 
 button:hover:not(:disabled) {
@@ -167,10 +171,12 @@ select {
   color: hsl(var(--primary-foreground));
   border: none;
   border-radius: var(--radius);
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem; /* Increased to match buttons */
   cursor: pointer;
   transition: background-color 0.3s ease;
-  font-size: 0.95rem;
+  font-size: 1.05rem; /* Increased from 0.95rem */
+  font-weight: 600;
+  min-height: 44px; /* Touch-friendly */
 }
 
 select:hover {
@@ -179,9 +185,9 @@ select:hover {
 
 label {
   display: block;
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-  font-size: 0.95rem;
+  margin-bottom: 0.5rem; /* Increased from 0.25rem */
+  font-weight: 600; /* Increased from 500 */
+  font-size: 1.05rem; /* Increased from 0.95rem */
 }
 
 input[type="text"],
@@ -190,12 +196,14 @@ input[type="password"],
 input[type="number"] {
   background-color: hsl(var(--input));
   color: hsl(var(--foreground));
-  border: 1px solid hsl(var(--border));
+  border: 2px solid hsl(var(--border)); /* Thicker border */
   border-radius: var(--radius);
-  padding: 0.5rem;
-  font-size: 1rem;
+  padding: 0.75rem 1rem; /* Increased from 0.5rem */
+  font-size: 1.1rem; /* Increased from 1rem */
   width: 100%;
   box-sizing: border-box;
+  min-height: 48px; /* Touch-friendly */
+  line-height: 1.5;
 }
 
 input[type="number"]:focus,
@@ -204,7 +212,7 @@ input[type="email"]:focus,
 input[type="password"]:focus {
   outline: none;
   border-color: hsl(var(--ring));
-  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.3);
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.3); /* Thicker focus ring */
 }
 
 a {
@@ -289,7 +297,7 @@ a:hover {
 /* Dashboard Layout Styles */
 .dashboard-container {
   padding: 1.5rem;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -323,7 +331,7 @@ a:hover {
 }
 
 /* Better sizing for large screens */
-@media (min-width: 1200px) {
+@media (min-width: 1400px) {
   .dashboard-container {
     padding: 2rem;
   }
@@ -477,11 +485,16 @@ a:hover {
   padding: 0.75rem;
   text-align: left;
   border-bottom: 1px solid hsl(var(--border));
-  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.event-list-table td {
+  white-space: nowrap; /* Prevent data from wrapping */
 }
 
 .event-list-table th {
   font-weight: 600;
+  white-space: normal; /* Allow header text to wrap */
+  vertical-align: bottom; /* Align wrapped headers to bottom */
 }
 
 .event-list-table .col-activity {

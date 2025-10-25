@@ -45,7 +45,9 @@
       "actions": "Acciones",
       "previous": "Anterior",
       "next": "Siguiente",
-      "page": "Página",  "confirmDeleteEvent": "¿Estás seguro de que quieres eliminar este evento?",
+      "page": "Página",
+      "navigate": "Navegar",
+      "confirmDeleteEvent": "¿Estás seguro de que quieres eliminar este evento?",
   "showEventList": "Mostrar lista de eventos",
   "hideEventList": "Ocultar lista de eventos",
   "showCharts": "Mostrar gráficos",
@@ -58,5 +60,6 @@
   "missing": "Faltan",
   "estCompletion": "Fecha est.",
   "goalReached": "¡Objetivo alcanzado!",
-  "noProgress": "Sin progreso"
+  "noProgress": "Sin progreso",
+  "confirmDeleteActivity": "¿Estás seguro de que quieres eliminar esta actividad y todos sus eventos asociados?"
 }

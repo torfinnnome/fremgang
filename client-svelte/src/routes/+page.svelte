@@ -1,37 +1,39 @@
 <script lang="ts">
-  import * as m from '$lib/paraglide/messages';
   import { onMount } from 'svelte';
-  // import { t } from 'svelte-i18next';
   import { authFetch } from '$lib/auth';
   import EventForm from '$lib/components/EventForm.svelte';
-  import DataCharts from '$lib/components/DataCharts.svelte';
-  import ExportButton from '$lib/components/ExportButton.svelte';
   import EventList from '$lib/components/EventList.svelte';
+  import DataCharts from '$lib/components/DataCharts.svelte';
   import ActivityProgress from '$lib/components/ActivityProgress.svelte';
+  import ExportButton from '$lib/components/ExportButton.svelte';
+  import { m } from '$lib/paraglide/messages.js';
 
-  export interface Activity {
+  export type Activity = {
     id: number;
-    user_id: number;
     name: string;
     target_count: number;
-  }
+  };
 
-  export interface TrainingEvent {
+  export type TrainingEvent = {
     id: number;
     activity_id: number;
     count: number;
     timestamp: string;
-  }
+  };
 
   let activities: Activity[] = [];
   let events: TrainingEvent[] = [];
+  let allEvents: TrainingEvent[] = [];
   let loading = true;
   let error: string | null = null;
   let showEventList = false;
   let showCharts = false;
+  let currentPage = 1;
+  const eventsPerPage = 10;
 
   async function fetchData() {
     error = null;
+    loading = true;
     try {
       const [activitiesRes, eventsRes] = await Promise.all([
         authFetch('/api/activities'),
@@ -43,15 +45,22 @@
       }
 
       activities = await activitiesRes.json();
-      events = await eventsRes.json();
+      allEvents = await eventsRes.json();
+      events = allEvents; // Keep events in sync for now
+      currentPage = 1; // Reset to first page when data changes
     } catch (err: any) {
       console.error('Error fetching data:', err);
       error = err.message;
-    }
-  finally {
+    } finally {
       loading = false;
     }
   }
+
+  function handlePageChange(newPage: number) {
+    currentPage = newPage;
+  }
+
+  $: paginatedEvents = allEvents.slice((currentPage - 1) * eventsPerPage, currentPage * eventsPerPage);
 
   onMount(fetchData);
 </script>
@@ -64,30 +73,39 @@
   {:else}
     <div class="dashboard-grid">
       <div class="card">
-        <EventForm {activities} on:eventAdded={fetchData} />
+        <EventForm {activities} on:eventLogged={fetchData} on:activityAdded={fetchData} />
         <div class="button-group">
-          <button on:click={() => (showEventList = !showEventList)}>
-            {showEventList ? m.hideEventList() : m.showEventList()}
+          <button onclick={() => (showEventList = !showEventList)}>
+            {showEventList ? $m.hideEventList : $m.showEventList}
           </button>
-          <button on:click={() => (showCharts = !showCharts)}>
-            {showCharts ? m.hideCharts() : m.showCharts()}
+          <button onclick={() => (showCharts = !showCharts)}>
+            {showCharts ? $m.hideCharts : $m.showCharts}
           </button>
-          <ExportButton {activities} {events} />
+          <ExportButton {activities} events={allEvents} />
         </div>
       </div>
       {#if showEventList}
         <div class="card event-list-card">
-          <EventList {activities} isVisible={showEventList} on:eventChanged={fetchData} />
+          <EventList
+            events={paginatedEvents}
+            {activities}
+            totalEvents={allEvents.length}
+            page={currentPage}
+            limit={eventsPerPage}
+            onPageChange={handlePageChange}
+            onEventDeleted={fetchData}
+            onEventUpdated={fetchData}
+          />
         </div>
       {/if}
     </div>
     {#if showCharts}
       <div class="card full-width-card" style="margin-top: 1.5rem;">
-        <DataCharts {activities} isVisible={showCharts} />
+        <DataCharts {activities} events={allEvents} />
       </div>
     {/if}
     <div class="card full-width-card" style="margin-top: 1.5rem;">
-      <ActivityProgress {activities} {events} on:activityChanged={fetchData} />
+      <ActivityProgress {activities} events={allEvents} on:activityChanged={fetchData} />
     </div>
   {/if}
 </div>

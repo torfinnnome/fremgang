@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   import { authFetch } from '$lib/auth';
   import type { Activity, TrainingEvent } from '../routes/+page.svelte';
-  import * as m from '$lib/paraglide/messages';
+  import { m } from '../paraglide/messages.js';
 
   export let activities: Activity[] = [];
   export let events: TrainingEvent[] = [];
@@ -62,11 +62,11 @@
 
     const totalReps = cumulativeReps;
     if (activity.target_count - totalReps <= 0) {
-      return m.goalReached();
+      return $m.goalReached;
     }
 
     if (slope <= 0) {
-      return m.noProgress();
+      return $m.noProgress;
     }
 
     const daysToCompletion = (activity.target_count - intercept) / slope;
@@ -142,10 +142,31 @@
     editingActivityId = null;
     error = null;
   }
+
+  async function handleDeleteActivity(activityId: number) {
+    if (!confirm($m.confirmDeleteActivity)) {
+      return;
+    }
+    error = null;
+    try {
+      const response = await authFetch(`/api/activities/${activityId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete activity');
+      }
+
+      dispatch('activityChanged');
+    } catch (err: any) {
+      error = err.message;
+    }
+  }
 </script>
 
 <div>
-  <h3>{m.activityProgress()}</h3>
+  <h3>{$m.activityProgress}</h3>
   {#if error}
     <p style="color: var(--error-color);">{error}</p>
   {/if}
@@ -154,15 +175,15 @@
     <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
       <thead>
         <tr style="border-bottom: 1px solid var(--on-surface-color);">
-          <th style="padding: 0.5rem; text-align: left;">{m.activityName()}</th>
-          <th style="padding: 0.5rem; text-align: left;">{m.targetCount()}</th>
-          <th style="padding: 0.5rem; text-align: left;">{m.missing()}</th>
-          <th style="padding: 0.5rem; text-align: left;">{m.all()}</th>
-          <th style="padding: 0.5rem; text-align: left;">{m.year()}</th>
-          <th style="padding: 0.5rem; text-align: left;">{m.month()}</th>
-          <th style="padding: 0.5rem; text-align: left;">{m.week()}</th>
-          <th style="padding: 0.5rem; text-align: left;">{m.estCompletion()}</th>
-          <th style="padding: 0.5rem; text-align: left;">{m.actions()}</th>
+          <th style="padding: 0.5rem; text-align: left;">{$m.activityName}</th>
+          <th style="padding: 0.5rem; text-align: left;">{$m.targetCount}</th>
+          <th style="padding: 0.5rem; text-align: left;">{$m.missing}</th>
+          <th style="padding: 0.5rem; text-align: left;">{$m.all}</th>
+          <th style="padding: 0.5rem; text-align: left;">{$m.year}</th>
+          <th style="padding: 0.5rem; text-align: left;">{$m.month}</th>
+          <th style="padding: 0.5rem; text-align: left;">{$m.week}</th>
+          <th style="padding: 0.5rem; text-align: left;">{$m.estCompletion}</th>
+          <th style="padding: 0.5rem; text-align: left;">{$m.actions}</th>
         </tr>
       </thead>
       <tbody>
@@ -189,10 +210,11 @@
             <td style="padding: 0.5rem;">{calculateEstimatedCompletion(activity.id)}</td>
             <td style="padding: 0.5rem;">
               {#if editingActivityId === activity.id}
-                <button on:click={() => handleUpdateTarget(activity.id)}>{m.updateTarget()}</button>
-                <button on:click={handleCancelEdit} style="margin-left: 0.5rem;">{m.cancel()}</button>
+                <button onclick={() => handleUpdateTarget(activity.id)}>{$m.updateTarget}</button>
+                <button onclick={handleCancelEdit} style="margin-left: 0.5rem;">{$m.cancel}</button>
               {:else}
-                <button on:click={() => handleEditClick(activity)}>{m.edit()}</button>
+                <button onclick={() => handleEditClick(activity)}>{$m.edit}</button>
+                <button onclick={() => handleDeleteActivity(activity.id)} style="margin-left: 0.5rem;">{$m.delete}</button>
               {/if}
             </td>
           </tr>
@@ -207,7 +229,7 @@
         <h4 style="margin-top: 0; margin-bottom: 0.75rem;">{activity.name}</h4>
         <div class="activity-card-content">
           <div class="activity-card-row">
-            <span class="activity-card-label">{m.targetCount()}:</span>
+            <span class="activity-card-label">{$m.targetCount}:</span>
             {#if editingActivityId === activity.id}
               <input
                 type="number"
@@ -220,35 +242,36 @@
             {/if}
           </div>
           <div class="activity-card-row">
-            <span class="activity-card-label">{m.missing()}:</span>
+            <span class="activity-card-label">{$m.missing}:</span>
             <span>{activity.target_count > 0 ? activity.target_count - calculateProgress(activity.id, 'all') : ''}</span>
           </div>
           <div class="activity-card-row">
-            <span class="activity-card-label">{m.all()}:</span>
+            <span class="activity-card-label">{$m.all}:</span>
             <span>{calculateProgress(activity.id, 'all')}</span>
           </div>
           <div class="activity-card-row">
-            <span class="activity-card-label">{m.year()}:</span>
+            <span class="activity-card-label">{$m.year}:</span>
             <span>{calculateProgress(activity.id, 'year')}</span>
           </div>
           <div class="activity-card-row">
-            <span class="activity-card-label">{m.month()}:</span>
+            <span class="activity-card-label">{$m.month}:</span>
             <span>{calculateProgress(activity.id, 'month')}</span>
           </div>
           <div class="activity-card-row">
-            <span class="activity-card-label">{m.week()}:</span>
+            <span class="activity-card-label">{$m.week}:</span>
             <span>{calculateProgress(activity.id, 'week')}</span>
           </div>
           <div class="activity-card-row">
-            <span class="activity-card-label">{m.estCompletion()}:</span>
+            <span class="activity-card-label">{$m.estCompletion}:</span>
             <span>{calculateEstimatedCompletion(activity.id)}</span>
           </div>
           <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
             {#if editingActivityId === activity.id}
-              <button on:click={() => handleUpdateTarget(activity.id)}>{m.updateTarget()}</button>
-              <button on:click={handleCancelEdit}>{m.cancel()}</button>
+              <button onclick={() => handleUpdateTarget(activity.id)}>{$m.updateTarget}</button>
+              <button onclick={handleCancelEdit}>{$m.cancel}</button>
             {:else}
-              <button on:click={() => handleEditClick(activity)}>{m.edit()}</button>
+              <button onclick={() => handleEditClick(activity)}>{$m.edit}</button>
+              <button onclick={() => handleDeleteActivity(activity.id)} style="margin-left: 0.5rem;">{$m.delete}</button>
             {/if}
           </div>
         </div>

@@ -1,0 +1,232 @@
+import { extractLocaleFromNavigator, localizeHref } from '$lib/paraglide/runtime';
+import { writable, derived, get } from 'svelte/store';
+
+export const en = {
+  appName: "Fremgang",
+  login: "Login",
+  register: "Register",
+  emailAddress: "Email Address",
+  password: "Password",
+  loginButton: "Login",
+  registerButton: "Register",
+  dontHaveAccount: "Don't have an account?",
+  alreadyHaveAccount: "Already have an account? Login",
+  dashboard: "Dashboard",
+  logout: "Logout",
+  addActivity: "Add Activity",
+  activityName: "Activity Name",
+  logEvent: "Log Event",
+  reps: "Repetitions",
+  exportCSV: "Export to CSV",
+  lightMode: "Light Mode",
+  darkMode: "Dark Mode",
+  charts: "Charts",
+  chartType: "Chart Type",
+  volume: "Volume",
+  timeOfDay: "Time of Day",
+  period: "Period",
+  week: "Week",
+  month: "Mes",
+  year: "Año",
+  all: "All",
+  workoutVolumeTitle: "Workout Volume Over Time",
+  timeOfDayTitle: "Workout Time of Day",
+  totalReps: "Total Reps",
+  repsPerEvent: "Reps per Event",
+  addNewActivity: "Add New Activity...",
+  selectActivity: "Select Activity",
+  selectActivityToView: "Select Activity to View",
+  edit: "Edit",
+  delete: "Delete",
+  updateEvent: "Update Event",
+  cancel: "Cancel",
+  eventList: "Event List",
+  noEventsYet: "No events yet.",
+  date: "Date",
+  time: "Time",
+  dateTime: "Date/Time",
+  actions: "Actions",
+  previous: "Previous",
+  next: "Next",
+  page: "Page",
+  confirmDeleteEvent: "Are you sure you want to delete this event?",
+  showEventList: "Show Event List",
+  hideEventList: "Hide Event List",
+  showCharts: "Show Charts",
+  hideCharts: "Hide Charts",
+  targetCount: "Target Count",
+  progress: "Progress",
+  updateTarget: "Update Target",
+  activityProgress: "Activity Progress",
+  noActivitiesYet: "No activities yet.",
+  missing: "Missing",
+  estCompletion: "Est. Completion",
+  goalReached: "Goal reached!",
+  noProgress: "No progress",
+  confirmDeleteActivity: "Are you sure you want to delete this activity and all its associated events?"
+};
+
+export const es = {
+  appName: "Fremgang",
+  login: "Iniciar sesión",
+  register: "Registrarse",
+  emailAddress: "Dirección de correo electrónico",
+  password: "Contraseña",
+  loginButton: "Iniciar sesión",
+  registerButton: "Registrarse",
+  dontHaveAccount: "¿No tienes una cuenta?",
+  alreadyHaveAccount: "¿Ya tienes una cuenta? Inicia sesión",
+  dashboard: "Panel de control",
+  logout: "Cerrar sesión",
+  addActivity: "Añadir actividad",
+  activityName: "Nombre de la actividad",
+  logEvent: "Registrar evento",
+  reps: "Repeticiones",
+  exportCSV: "Exportar a CSV",
+  lightMode: "Modo claro",
+  darkMode: "Modo oscuro",
+  charts: "Gráficos",
+  chartType: "Tipo de gráfico",
+  volume: "Volumen",
+  timeOfDay: "Hora del día",
+  period: "Período",
+  week: "Semana",
+  month: "Mes",
+  year: "Año",
+  all: "Todo",
+  workoutVolumeTitle: "Volumen de entrenamiento a lo largo del tiempo",
+  timeOfDayTitle: "Hora del día de entrenamiento",
+  totalReps: "Repeticiones totales",
+  repsPerEvent: "Repeticiones por evento",
+  addNewActivity: "Añadir nueva actividad...",
+  selectActivity: "Seleccionar actividad",
+  selectActivityToView: "Seleccionar actividad para ver",
+  edit: "Editar",
+  delete: "Eliminar",
+  updateEvent: "Actualizar evento",
+  cancel: "Cancelar",
+  eventList: "Lista de eventos",
+  noEventsYet: "Aún no hay eventos.",
+  date: "Fecha",
+  time: "Tid",
+  dateTime: "Fecha y hora",
+  actions: "Acciones",
+  previous: "Anterior",
+  next: "Siguiente",
+  page: "Página",
+  confirmDeleteEvent: "¿Estás seguro de que quieres eliminar este evento?",
+  showEventList: "Mostrar lista de eventos",
+  hideEventList: "Ocultar lista de eventos",
+  showCharts: "Mostrar gráficos",
+  hideCharts: "Ocultar gráficos",
+  targetCount: "Conteo objetivo",
+  progress: "Progreso",
+  updateTarget: "Actualizar objetivo",
+  activityProgress: "Progreso de actividad",
+  noActivitiesYet: "Aún no hay actividades.",
+  missing: "Faltan",
+  estCompletion: "Fecha est.",
+  goalReached: "¡Objetivo alcanzado!",
+  noProgress: "Sin progreso",
+  confirmDeleteActivity: "¿Estás seguro de que quieres eliminar esta actividad y todos sus eventos asociados?"
+};
+
+export const no = {
+  appName: "Fremgang",
+  login: "Logg inn",
+  register: "Registrer",
+  emailAddress: "E-postadresse",
+  password: "Passord",
+  loginButton: "Logg inn",
+  registerButton: "Registrer",
+  dontHaveAccount: "Har du ikke en konto?",
+  alreadyHaveAccount: "Har du allerede en konto? Logg inn",
+  dashboard: "Dashbord",
+  logout: "Logg ut",
+  addActivity: "Legg til aktivitet",
+  activityName: "Aktivitetsnavn",
+  logEvent: "Loggfør hendelse",
+  reps: "Repetisjoner",
+  exportCSV: "Eksporter til CSV",
+  lightMode: "Lys modus",
+  darkMode: "Mørk modus",
+  charts: "Diagrammer",
+  chartType: "Diagramtype",
+  volume: "Volum",
+  timeOfDay: "Tid på dagen",
+  period: "Periode",
+  week: "Uke",
+  month: "Måned",
+  year: "År",
+  all: "Alle",
+  workoutVolumeTitle: "Treningsvolum over tid",
+  timeOfDayTitle: "Treningstid på dagen",
+  totalReps: "Totalt antall repetisjoner",
+  repsPerEvent: "Repetisjoner per hendelse",
+  addNewActivity: "Legg til ny aktivitet...",
+  selectActivity: "Velg aktivitet",
+  selectActivityToView: "Velg aktivitet å vise",
+  edit: "Rediger",
+  delete: "Slett",
+  updateEvent: "Oppdater hendelse",
+  cancel: "Avbryt",
+  eventList: "Hendelsesliste",
+  noEventsYet: "Ingen hendelser ennå.",
+  date: "Dato",
+  time: "Tid",
+  dateTime: "Dato & tid",
+  actions: "Handlinger",
+  previous: "Forrige",
+  next: "Neste",
+  page: "Side",
+  confirmDeleteEvent: "Er du sikker på at du vil slette denne hendelsen?",
+  showEventList: "Vis hendelsesliste",
+  hideEventList: "Skjul hendelsesliste",
+  showCharts: "Vis diagrammer",
+  hideCharts: "Skjul diagrammer",
+  targetCount: "Måltall",
+  progress: "Fremdrift",
+  updateTarget: "Oppdater måltall",
+  activityProgress: "Aktivitetsfremdrift",
+  noActivitiesYet: "Ingen aktiviteter ennå.",
+  missing: "Mangler",
+  estCompletion: "Estimert ferdig",
+  goalReached: "Mål nådd!",
+  noProgress: "Ingen fremgang",
+  confirmDeleteActivity: "Er du sikker på at du vil slette denne aktiviteten og alle tilknyttede hendelser?"
+};
+
+const currentLocale = writable(extractLocaleFromNavigator() || 'en');
+
+export function getLocale() {
+  return get(currentLocale);
+}
+
+export function setLocale(locale) {
+  currentLocale.set(locale);
+  // localizeHref expects a path without the locale prefix
+  const currentPath = window.location.pathname;
+  const localePrefixMatch = currentPath.match(/^\/(en|es|no)(\/|$)/);
+  let basePath = currentPath;
+
+  if (localePrefixMatch) {
+    basePath = currentPath.replace(localePrefixMatch[0], localePrefixMatch[2] || '/');
+  }
+
+  window.location.href = localizeHref(basePath, { locale: locale });
+}
+
+const translations = {
+  en,
+  es,
+  no,
+};
+
+export const m = derived(currentLocale, ($currentLocale) => {
+  const messages = translations[$currentLocale] || en; // Fallback to English
+  const messageFunctions = {};
+  for (const key in messages) {
+    messageFunctions[key] = messages[key];
+  }
+  return messageFunctions;
+});

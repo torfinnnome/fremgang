@@ -47,6 +47,7 @@
     "previous": "Previous",
     "next": "Next",
     "page": "Page",
+    "navigate": "Navigate",
     "confirmDeleteEvent": "Are you sure you want to delete this event?",
   "showEventList": "Show Event List",
   "hideEventList": "Hide Event List",
@@ -60,5 +61,6 @@
   "missing": "Missing",
   "estCompletion": "Est. Completion",
   "goalReached": "Goal reached!",
-  "noProgress": "No progress"
+  "noProgress": "No progress",
+  "confirmDeleteActivity": "Are you sure you want to delete this activity and all its associated events?"
 }

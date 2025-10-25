@@ -1,84 +1,31 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { authFetch } from '$lib/auth';
-  import type { Activity } from '../routes/+page.svelte';
-  import * as m from '$lib/paraglide/messages';
+  import { get } from 'svelte/store';
+  import { token } from '$lib/auth';
+  import { m } from '../paraglide/messages.js';
 
-  export let activities: Activity[] = [];
+  export let activities: { id: number; name: string; target_count: number }[] = [];
 
   const dispatch = createEventDispatcher();
 
-  const ADD_NEW_ACTIVITY_VALUE = 'add-new';
-
-  let selectedActivityId: string = '';
-  let count: string = '';
+  let selectedActivityId: number | null = null;
+  let reps: number = 0;
   let newActivityName: string = '';
-  let targetCount: string = '0';
-  let isAddingNewActivity: boolean = false;
+  let newActivityTargetCount: number = 0;
+  let showNewActivityForm: boolean = false;
   let error: string | null = null;
 
-  $: {
-    const activityIds = activities.map(a => a.id.toString());
-    if (activities.length > 0 && !activityIds.includes(selectedActivityId) && selectedActivityId !== ADD_NEW_ACTIVITY_VALUE) {
-      selectedActivityId = activities[0].id.toString();
-      isAddingNewActivity = false;
-    } else if (activities.length === 0) {
-      selectedActivityId = ADD_NEW_ACTIVITY_VALUE;
-      isAddingNewActivity = true;
-    }
-  }
+  const ADD_NEW_ACTIVITY_VALUE = 'add_new';
 
-  function handleActivityChange(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
-    if (value === ADD_NEW_ACTIVITY_VALUE) {
-      isAddingNewActivity = true;
-      selectedActivityId = ADD_NEW_ACTIVITY_VALUE;
-    } else {
-      isAddingNewActivity = false;
-      selectedActivityId = value;
-    }
-  }
-
-  async function handleSubmit() {
+  async function handleLogEvent() {
     error = null;
-
-    let activityToLogId = parseInt(selectedActivityId);
-
-    if (isAddingNewActivity) {
-      if (!newActivityName.trim()) {
-        error = 'Activity name is required.';
-        return;
-      }
-      try {
-        const addActivityResponse = await authFetch('/api/activities', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name: newActivityName, target_count: parseInt(targetCount) }),
-        });
-
-        const addActivityData = await addActivityResponse.json();
-
-        if (!addActivityResponse.ok) {
-          throw new Error(addActivityData.message || 'Failed to add new activity');
-        }
-        activityToLogId = addActivityData.id;
-        newActivityName = '';
-        targetCount = '0';
-        isAddingNewActivity = false;
-        selectedActivityId = activityToLogId.toString();
-      } catch (err: any) {
-        error = err.message;
-        return;
-      }
-    } else if (!selectedActivityId) {
-      error = 'Please select an activity or add a new one.';
+    if (selectedActivityId === null) {
+      error = 'Please select an activity.';
       return;
     }
-
-    if (!count || parseInt(count) <= 0) {
-      error = 'Repetitions must be a positive number.';
+    if (reps <= 0) {
+      error = 'Reps must be greater than 0.';
       return;
     }
 
@@ -88,84 +35,106 @@
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ activity_id: activityToLogId, count: parseInt(count), timestamp: new Date().toLocaleString('sv-SE') }),
+        body: JSON.stringify({ activity_id: selectedActivityId, count: reps }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
+        const data = await response.json();
         throw new Error(data.message || 'Failed to log event');
       }
 
-      count = '';
-      dispatch('eventAdded');
+      reps = 0;
+      dispatch('eventLogged');
     } catch (err: any) {
       error = err.message;
     }
   }
+
+  async function handleAddNewActivity() {
+    error = null;
+    if (!newActivityName.trim()) {
+      error = 'Activity name cannot be empty.';
+      return;
+    }
+
+    try {
+      const response = await authFetch('/api/activities', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: newActivityName, target_count: newActivityTargetCount }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to add activity');
+      }
+
+      newActivityName = '';
+      newActivityTargetCount = 0;
+      showNewActivityForm = false;
+      dispatch('activityAdded');
+    } catch (err: any) {
+      error = err.message;
+    }
+  }
+
+  function handleActivitySelect(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    if (value === ADD_NEW_ACTIVITY_VALUE) {
+      showNewActivityForm = true;
+      selectedActivityId = null;
+    } else {
+      showNewActivityForm = false;
+      selectedActivityId = Number(value);
+    }
+  }
 </script>
 
-<form on:submit|preventDefault={handleSubmit}>
-  <h3>{m.logEvent()}</h3>
-  <div style="margin-bottom: 1rem;">
-    <label for="activitySelect">{m.selectActivity()}</label>
-    <select
-      id="activitySelect"
-      bind:value={selectedActivityId}
-      on:change={handleActivityChange}
-      required
-      style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;"
-    >
-      {#each activities as activity}
-        <option value={String(activity.id)}>
-          {activity.name}
-        </option>
-      {/each}
-      <option value={ADD_NEW_ACTIVITY_VALUE}>{m.addNewActivity()}</option>
-    </select>
-  </div>
+<div class="event-form-container">
+  <h3>{$m.logEvent}</h3>
+  {#if error}
+    <p style="color: var(--error-color);">{error}</p>
+  {/if}
 
-  {#if isAddingNewActivity}
-    <div style="margin-bottom: 1rem;">
-      <label for="newActivityName">{m.activityName()}</label>
+  {#if showNewActivityForm}
+    <div class="new-activity-form">
+      <label for="newActivityName">{$m.activityName}</label>
       <input
         type="text"
         id="newActivityName"
         bind:value={newActivityName}
-        required
-        style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;"
+        placeholder="e.g., Push-ups"
       />
-    </div>
-  {/if}
 
-  {#if isAddingNewActivity}
-    <div style="margin-bottom: 1rem;">
-      <label for="targetCount">{m.targetCount()}</label>
+      <label for="targetCount">{$m.targetCount} (optional)</label>
       <input
         type="number"
         id="targetCount"
-        bind:value={targetCount}
+        bind:value={newActivityTargetCount}
         min="0"
-        style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;"
+        placeholder="0"
       />
+
+      <button on:click={handleAddNewActivity}>{$m.addActivity}</button>
+      <button on:click={() => showNewActivityForm = false}>{$m.cancel}</button>
+    </div>
+  {:else}
+    <div class="log-event-form">
+      <label for="activitySelect">{$m.selectActivity}</label>
+      <select id="activitySelect" on:change={handleActivitySelect}>
+        <option value="">-- {$m.selectActivity} --</option>
+        {#each activities as activity}
+          <option value={activity.id}>{activity.name}</option>
+        {/each}
+        <option value={ADD_NEW_ACTIVITY_VALUE}>{$m.addNewActivity}...</option>
+      </select>
+
+      <label for="reps">{$m.reps}</label>
+      <input type="number" id="reps" bind:value={reps} min="1" />
+
+      <button on:click={handleLogEvent}>{$m.logEvent}</button>
     </div>
   {/if}
-
-  <div style="margin-bottom: 1rem;">
-    <label for="reps">{m.reps()}</label>
-    <input
-      type="number"
-      id="reps"
-      bind:value={count}
-      required
-      min="1"
-      style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;"
-    />
-  </div>
-  {#if error}
-    <p style="color: var(--error-color);">{error}</p>
-  {/if}
-  <button type="submit" style="width: 100%; padding: 0.75rem;">
-    {m.logEvent()}
-  </button>
-</form>
+</div>

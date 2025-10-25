@@ -1,58 +1,43 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
   import { authFetch } from '$lib/auth';
-  import type { Activity, TrainingEvent } from '../routes/+page.svelte';
-  import * as m from '$lib/paraglide/messages';
+  import type { Activity } from '../../routes/+page.svelte';
+  import { m } from '../paraglide/messages.js';
 
-  export let activities: Activity[] = [];
-  export let isVisible: boolean = false;
+  let {
+    events = [],
+    activities = [],
+    totalEvents = 0,
+    page = 1,
+    limit = 10,
+    onPageChange = (newPage: number) => {},
+    onEventDeleted = () => {},
+    onEventUpdated = () => {}
+  }: {
+    events?: any[];
+    activities?: Activity[];
+    totalEvents?: number;
+    page?: number;
+    limit?: number;
+    onPageChange?: (newPage: number) => void;
+    onEventDeleted?: () => void;
+    onEventUpdated?: () => void;
+  } = $props();
 
-  const dispatch = createEventDispatcher();
+  let editingEventId: number | null = $state(null);
+  let editReps: number = $state(0);
+  let editTimestamp: string = $state('');
+  let editActivityId: number | null = $state(null);
+  let error: string | null = $state(null);
 
-  let events: TrainingEvent[] = [];
-  let loadingEvents = false;
-  let eventsError: string | null = null;
-  let currentPage = 1;
-  let totalPages = 0;
+  let totalPages = $derived(Math.ceil(totalEvents / limit));
 
-  let editingEventId: number | null = null;
-  let editCount: string = '';
-  let editTimestamp: Date = new Date();
-  let editActivityId: string = '';
-  let error: string | null = null;
-
-  const activityMap = new Map(activities.map(act => [act.id, act.name]));
-
-  async function fetchEvents(page = 1) {
-    if (!isVisible) return;
-    loadingEvents = true;
-    eventsError = null;
-    try {
-      const response = await authFetch(`/api/events?page=${page}&limit=10`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch events');
-      }
-      const data = await response.json();
-      events = data.events;
-      currentPage = data.page;
-      totalPages = Math.ceil(data.totalEvents / data.limit);
-    } catch (err: any) {
-      eventsError = err.message;
-    }
-    finally {
-      loadingEvents = false;
-    }
+  function formatDate(timestamp: string) {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
   }
 
-  onMount(() => {
-    if (isVisible) {
-      fetchEvents(currentPage);
-    }
-  });
-
   async function handleDelete(eventId: number) {
-    if (!window.confirm(m.confirmDeleteEvent())) return;
-
+    if (!window.confirm($m.confirmDeleteEvent)) return;
     error = null;
     try {
       const response = await authFetch(`/api/events/${eventId}`, {
@@ -63,38 +48,42 @@
         const data = await response.json();
         throw new Error(data.message || 'Failed to delete event');
       }
-
-      if (events.length === 1 && currentPage > 1) {
-        fetchEvents(currentPage - 1);
-      } else {
-        fetchEvents(currentPage);
-      }
-      dispatch('eventChanged');
+      onEventDeleted();
     } catch (err: any) {
       error = err.message;
     }
   }
 
-  function handleEditClick(event: TrainingEvent) {
+  function handleEditClick(event: any) {
     editingEventId = event.id;
-    editCount = event.count.toString();
-    editTimestamp = new Date(event.timestamp);
-    editActivityId = event.activity_id.toString();
+    editReps = event.count;
+    editTimestamp = event.timestamp.slice(0, 16); // Format for datetime-local input
+    editActivityId = event.activity_id;
+  }
+
+  function handleCancelEdit() {
+    editingEventId = null;
+    error = null;
   }
 
   async function handleUpdate(eventId: number) {
     error = null;
+    if (editReps <= 0) {
+      error = 'Reps must be greater than 0.';
+      return;
+    }
+    if (!editActivityId) {
+      error = 'Activity must be selected.';
+      return;
+    }
+
     try {
       const response = await authFetch(`/api/events/${eventId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          activity_id: parseInt(editActivityId),
-          count: parseInt(editCount),
-          timestamp: editTimestamp.toISOString(),
-        }),
+        body: JSON.stringify({ activity_id: editActivityId, count: editReps, timestamp: editTimestamp }),
       });
 
       if (!response.ok) {
@@ -103,92 +92,85 @@
       }
 
       editingEventId = null;
-      fetchEvents(currentPage);
-      dispatch('eventChanged');
+      onEventUpdated();
     } catch (err: any) {
       error = err.message;
     }
   }
 
-  function handleCancelEdit() {
-    editingEventId = null;
-    error = null;
+  function goToPage(newPage: number) {
+    if (newPage > 0 && newPage <= totalPages) {
+      onPageChange(newPage);
+    }
   }
 </script>
 
 <div class="event-list-container">
-  <style>
-    .pagination-controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-  </style>
-  <h3>{m.eventList()}</h3>
+  <h3>{$m.eventList}</h3>
   {#if error}
     <p style="color: var(--error-color);">{error}</p>
   {/if}
-  <div class="event-list-table-wrapper">
-    <table class="event-list-table">
-      <thead>
-        <tr>
-          <th class="col-activity">{m.activityName()}</th>
-          <th class="col-reps">{m.reps()}</th>
-          <th class="col-datetime">{m.dateTime()}</th>
-          <th class="col-actions">{m.actions()}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each events as event (event.id)}
-          {#if editingEventId === event.id}
-            <tr class="editing-row">
-              <td class="col-activity">
-                <select bind:value={editActivityId} style="width: 100%;">
-                  {#each activities as activity}
-                    <option value={activity.id}>{activity.name}</option>
-                  {/each}
-                </select>
-              </td>
-              <td class="col-reps">
-                <input type="number" bind:value={editCount} style="width: 60px;" />
-              </td>
-              <td class="col-datetime">
-                <input type="datetime-local" bind:value={editTimestamp} />
-              </td>
-              <td class="col-actions">
-                <button class="btn-small" on:click={() => handleUpdate(event.id)}>{m.updateEvent()}</button>
-                <button class="btn-small" on:click={handleCancelEdit}>{m.cancel()}</button>
-              </td>
-            </tr>
-          {:else}
+
+  {#if events.length === 0}
+    <p>{$m.noEventsYet}</p>
+  {:else}
+    <div class="table-responsive">
+      <table class="event-table">
+        <thead>
+          <tr>
+            <th class="col-activity">{$m.activityName}</th>
+            <th class="col-reps">{$m.reps}</th>
+            <th class="col-datetime">{$m.dateTime}</th>
+            <th class="col-actions">{$m.actions}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each events as event (event.id)}
             <tr>
-              <td class="col-activity">{activityMap.get(event.activity_id) || 'Unknown'}</td>
-              <td class="col-reps">{event.count}</td>
-              <td class="col-datetime">
-                <div class="datetime-display">
-                  <span class="date-part">{new Date(event.timestamp).toISOString().slice(0, 10)}</span>
-                  <span class="time-part">{new Date(event.timestamp).toISOString().slice(11, 19)}</span>
-                </div>
+              <td>
+                {#if editingEventId === event.id}
+                  <select bind:value={editActivityId}>
+                    {#each activities as activity}
+                      <option value={activity.id}>{activity.name}</option>
+                    {/each}
+                  </select>
+                {:else}
+                  {activities.find(a => a.id === event.activity_id)?.name || 'Unknown'}
+                {/if}
               </td>
-              <td class="col-actions">
-                <button class="btn-small" on:click={() => handleEditClick(event)}>{m.edit()}</button>
-                <button class="btn-small" on:click={() => handleDelete(event.id)}>{m.deleteMessage()}</button>
+              <td>
+                {#if editingEventId === event.id}
+                  <input type="number" bind:value={editReps} min="1" />
+                {:else}
+                  {event.count}
+                {/if}
+              </td>
+              <td>
+                {#if editingEventId === event.id}
+                  <input type="datetime-local" bind:value={editTimestamp} />
+                {:else}
+                  {formatDate(event.timestamp)}
+                {/if}
+              </td>
+              <td>
+                {#if editingEventId === event.id}
+                  <button class="btn-small" onclick={() => handleUpdate(event.id)}>{$m.updateEvent}</button>
+                  <button class="btn-small" onclick={handleCancelEdit}>{$m.cancel}</button>
+                {:else}
+                  <button class="btn-small" onclick={() => handleEditClick(event)}>{$m.edit}</button>
+                  <button class="btn-small" onclick={() => handleDelete(event.id)}>{$m.delete}</button>
+                {/if}
               </td>
             </tr>
-          {/if}
-        {/each}
-      </tbody>
-    </table>
-  </div>
-  <div class="pagination-controls">
-    <button on:click={() => fetchEvents(currentPage - 1)} disabled={currentPage <= 1}>
-      {m.previous()}
-    </button>
-    <span>{m.page()} {currentPage} / {totalPages}</span>
-    <button on:click={() => fetchEvents(currentPage + 1)} disabled={currentPage >= totalPages}>
-      {m.next()}
-    </button>
-  </div>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-controls">
+      <button onclick={() => goToPage(page - 1)} disabled={page === 1}>{$m.previous}</button>
+      <span>{$m.page} {page} / {totalPages}</span>
+      <button onclick={() => goToPage(page + 1)} disabled={page === totalPages}>{$m.next}</button>
+    </div>
+  {/if}
 </div>

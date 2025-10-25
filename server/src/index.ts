@@ -161,6 +161,46 @@ app.put('/api/activities/:id', authenticateToken, (req: AuthenticatedRequest, re
   });
 });
 
+// Delete an activity
+app.delete('/api/activities/:id', authenticateToken, (req: AuthenticatedRequest, res) => {
+  const activityId = req.params.id;
+  const userId = req.user!.userId;
+
+  // Verify that the activity belongs to the user
+  const verifySql = "SELECT id FROM activities WHERE id = ? AND user_id = ?";
+  db.get(verifySql, [activityId, userId], (err, activity) => {
+    if (err) {
+      return res.status(500).json({ message: "Database error", error: err.message });
+    }
+    if (!activity) {
+      return res.status(403).json({ message: "Forbidden: Activity does not belong to the user" });
+    }
+
+    // Start a transaction to ensure both deletions are atomic
+    db.serialize(() => {
+      db.run("BEGIN TRANSACTION;");
+
+      const deleteEventsSql = "DELETE FROM events WHERE activity_id = ?";
+      db.run(deleteEventsSql, [activityId], (err) => {
+        if (err) {
+          db.run("ROLLBACK;");
+          return res.status(500).json({ message: "Database error deleting events", error: err.message });
+        }
+
+        const deleteActivitySql = "DELETE FROM activities WHERE id = ?";
+        db.run(deleteActivitySql, [activityId], function (err) {
+          if (err) {
+            db.run("ROLLBACK;");
+            return res.status(500).json({ message: "Database error deleting activity", error: err.message });
+          }
+          db.run("COMMIT;");
+          res.json({ message: "Activity and associated events deleted", changes: this.changes });
+        });
+      });
+    });
+  });
+});
+
 // Get all events for a user, with pagination
 app.get('/api/events', authenticateToken, (req: AuthenticatedRequest, res) => {
   const userId = req.user!.userId;

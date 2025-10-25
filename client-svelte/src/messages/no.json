@@ -45,7 +45,9 @@
       "actions": "Handlinger",
       "previous": "Forrige",
       "next": "Neste",
-      "page": "Side",  "confirmDeleteEvent": "Er du sikker på at du vil slette denne hendelsen?",
+      "page": "Side",
+      "navigate": "Naviger",
+      "confirmDeleteEvent": "Er du sikker på at du vil slette denne hendelsen?",
   "showEventList": "Vis hendelsesliste",
   "hideEventList": "Skjul hendelsesliste",
   "showCharts": "Vis diagrammer",
@@ -58,5 +60,6 @@
   "missing": "Mangler",
   "estCompletion": "Estimert ferdig",
   "goalReached": "Mål nådd!",
-  "noProgress": "Ingen fremgang"
+  "noProgress": "Ingen fremgang",
+  "confirmDeleteActivity": "Er du sikker på at du vil slette denne aktiviteten og alle tilknyttede hendelser?"
 }

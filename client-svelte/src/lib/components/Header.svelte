@@ -1,8 +1,7 @@
 <script lang="ts">
   import { theme, isAuthenticated } from '$lib/stores';
   import { get } from 'svelte/store';
-  import * as m from '$lib/paraglide/messages';
-  import { setLocale, getLocale } from '$lib/paraglide/messages';
+  import { m, setLocale, getLocale } from '../paraglide/messages.js';
 
   function toggleTheme() {
     theme.update(current => (current === 'light' ? 'dark' : 'light'));
@@ -24,7 +23,7 @@
 </script>
 
 <header class="app-header">
-  <h1 class="app-title">{m.appName()}</h1>
+  <h1 class="app-title">{$m.appName}</h1>
   <div class="header-controls">
     <select on:change={handleLanguageChange} value={getLocale()} style="padding: 0.5rem;">
       <option value="en">English</option>
@@ -33,12 +32,12 @@
     </select>
 
     <button on:click={toggleTheme} style="padding: 0.5rem;">
-      {$theme === 'light' ? m.darkMode() : m.lightMode()}
+      {$theme === 'light' ? $m.darkMode : $m.lightMode}
     </button>
 
     {#if get(isAuthenticated)}
       <button on:click={logout} style="padding: 0.5rem;">
-        {m.logout()}
+        {$m.logout}
       </button>
     {/if}
   </div>
