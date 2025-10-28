@@ -10,7 +10,7 @@
   const dispatch = createEventDispatcher();
 
   let selectedActivityId: number | null = null;
-  let reps: number = 0;
+  let reps: number | null = null;
   let newActivityName: string = '';
   let newActivityTargetCount: number = 0;
   let showNewActivityForm: boolean = false;
@@ -24,7 +24,7 @@
       error = 'Please select an activity.';
       return;
     }
-    if (reps <= 0) {
+    if (reps === null || reps <= 0) {
       error = 'Reps must be greater than 0.';
       return;
     }
@@ -43,7 +43,7 @@
         throw new Error(data.message || 'Failed to log event');
       }
 
-      reps = 0;
+      reps = null;
       dispatch('eventLogged');
     } catch (err: any) {
       error = err.message;
@@ -132,7 +132,7 @@
       </select>
 
       <label for="reps">{$m.reps}</label>
-      <input type="number" id="reps" bind:value={reps} min="1" />
+      <input type="number" id="reps" bind:value={reps} placeholder="0" />
 
       <button on:click={handleLogEvent}>{$m.logEvent}</button>
     </div>
