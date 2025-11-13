@@ -20,6 +20,7 @@ This application was inspired by Jason Gilmore's article "10,000 Pushups And Oth
 ## Screenshot
 
 <img src="shot.png" alt="Screenshot of the Fremgang application dashboard, showing activity tracking, event logging, and progress visualization." width="700"/>
+
 *The dashboard view of the Fremgang application, showcasing the user interface for tracking activities, logging events, and visualizing progress with interactive charts.*
 
 ## Technologies Used
