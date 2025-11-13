@@ -25,5 +25,8 @@
 	"dependencies": {
 		"chart.js": "^4.5.1",
 		"papaparse": "^5.5.3"
+	},
+	"overrides": {
+		"cookie": "^0.7.0"
 	}
 }
