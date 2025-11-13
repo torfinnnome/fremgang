@@ -109,3 +109,18 @@
     </div>
   {/if}
 </div>
+
+<style>
+  .button-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .button-group {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

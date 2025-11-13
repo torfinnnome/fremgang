@@ -138,3 +138,45 @@
     </div>
   {/if}
 </div>
+
+<style>
+  .log-event-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .log-event-form label {
+    margin-top: 0.5rem;
+  }
+
+  .log-event-form label:first-of-type {
+    margin-top: 0;
+  }
+
+  .log-event-form button {
+    margin-top: 1rem;
+  }
+
+  .log-event-form select {
+    font-weight: 400;
+  }
+
+  .new-activity-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .new-activity-form label {
+    margin-top: 0.5rem;
+  }
+
+  .new-activity-form label:first-of-type {
+    margin-top: 0;
+  }
+
+  .new-activity-form button {
+    margin-top: 0.5rem;
+  }
+</style>
