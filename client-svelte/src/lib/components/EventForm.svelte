@@ -128,7 +128,7 @@
         {#each activities as activity}
           <option value={activity.id}>{activity.name}</option>
         {/each}
-        <option value={ADD_NEW_ACTIVITY_VALUE}>{$m.addNewActivity}...</option>
+        <option value={ADD_NEW_ACTIVITY_VALUE}>{$m.addNewActivity}</option>
       </select>
 
       <label for="reps">{$m.reps}</label>
