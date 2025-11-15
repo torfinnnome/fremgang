@@ -225,7 +225,7 @@
         case 'month':
           // Group by day for the selected month
           if (eventDate.getFullYear() === refDate.getFullYear() && eventDate.getMonth() === refDate.getMonth()) {
-            key = eventDate.toISOString().slice(0, 10); // YYYY-MM-DD
+            key = `${eventDate.getFullYear()}-${(eventDate.getMonth() + 1).toString().padStart(2, '0')}-${eventDate.getDate().toString().padStart(2, '0')}`;
             include = true;
           }
           break;
@@ -237,7 +237,7 @@
           sunday.setHours(23, 59, 59, 999);
 
           if (eventDate >= monday && eventDate <= sunday) {
-            key = eventDate.toISOString().slice(0, 10); // YYYY-MM-DD
+            key = `${eventDate.getFullYear()}-${(eventDate.getMonth() + 1).toString().padStart(2, '0')}-${eventDate.getDate().toString().padStart(2, '0')}`;
             include = true;
           }
           break;
@@ -252,7 +252,7 @@
 
           if (eventDate >= monday12WeeksAgo && eventDate <= sundayRefWeek) {
             const eventMonday = getMonday(eventDate);
-            key = eventMonday.toISOString().slice(0, 10);
+            key = `${eventMonday.getFullYear()}-${(eventMonday.getMonth() + 1).toString().padStart(2, '0')}-${eventMonday.getDate().toString().padStart(2, '0')}`;
             include = true;
           }
           break;
@@ -272,7 +272,7 @@
       for (let i = 0; i < 7; i++) {
         const date = new Date(monday);
         date.setDate(monday.getDate() + i);
-        const key = date.toISOString().slice(0, 10);
+        const key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
         const dayName = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i];
         sortedData.push({
           date: dayName,
@@ -287,7 +287,7 @@
 
       for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
-        const key = date.toISOString().slice(0, 10);
+        const key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
         sortedData.push({
           date: `${day}`,
           reps: volumeMap.get(key) || 0
@@ -311,7 +311,7 @@
       for (let i = 11; i >= 0; i--) {
         const monday = new Date(mondayRef);
         monday.setDate(mondayRef.getDate() - (i * 7));
-        const key = monday.toISOString().slice(0, 10);
+        const key = `${monday.getFullYear()}-${(monday.getMonth() + 1).toString().padStart(2, '0')}-${monday.getDate().toString().padStart(2, '0')}`;
         const weekLabel = `${monday.getMonth() + 1}/${monday.getDate()}`;
         sortedData.push({
           date: weekLabel,
