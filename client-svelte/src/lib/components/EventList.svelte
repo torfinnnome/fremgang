@@ -140,7 +140,7 @@
               </td>
               <td>
                 {#if editingEventId === event.id}
-                  <input type="number" bind:value={editReps} min="1" />
+                  <input type="number" bind:value={editReps} min="1" inputmode="numeric" pattern="[0-9]*" />
                 {:else}
                   {event.count}
                 {/if}

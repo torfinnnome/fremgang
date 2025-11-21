@@ -132,7 +132,7 @@
       </select>
 
       <label for="reps">{$m.reps}</label>
-      <input type="number" id="reps" bind:value={reps} placeholder="0" />
+      <input type="number" id="reps" bind:value={reps} placeholder="0" inputmode="numeric" pattern="[0-9]*" />
 
       <button on:click={handleLogEvent}>{$m.logEvent}</button>
     </div>
