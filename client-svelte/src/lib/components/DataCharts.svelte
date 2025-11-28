@@ -55,6 +55,8 @@
     if (volumeChart) volumeChart.destroy();
 
     const data = processVolumeData(filteredEvents, timePeriod, timeOffset);
+    const totalReps = data.reduce((sum, row) => sum + row.reps, 0);
+
     try {
       volumeChart = new Chart(volumeChartCanvas, {
       type: 'bar',
@@ -102,6 +104,16 @@
               weight: 'bold'
             }
           },
+          subtitle: {
+            display: true,
+            text: `Total: ${totalReps} reps`,
+            font: {
+              size: 16
+            },
+            padding: {
+              bottom: 10
+            }
+          },
           legend: {
             labels: {
               font: {
@@ -122,6 +134,8 @@
     if (timeOfDayChart) timeOfDayChart.destroy();
 
     const data = processTimeOfDayData(filteredEvents, timePeriod, timeOffset);
+    const totalReps = data.reduce((sum, count) => sum + count, 0);
+
     try {
       timeOfDayChart = new Chart(timeOfDayChartCanvas, {
       type: 'bar',
@@ -165,6 +179,16 @@
             font: {
               size: 20,
               weight: 'bold'
+            }
+          },
+          subtitle: {
+            display: true,
+            text: `Total: ${totalReps} reps`,
+            font: {
+              size: 16
+            },
+            padding: {
+              bottom: 10
             }
           },
           legend: {
