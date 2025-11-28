@@ -34,11 +34,19 @@
   async function fetchData() {
     error = null;
     loading = true;
+    let isUnauthorized = false;
+
     try {
       const [activitiesRes, eventsRes] = await Promise.all([
         authFetch('/api/activities'),
         authFetch('/api/events/all'),
       ]);
+
+      // If we get a 401, authFetch will redirect to login, keep loading state
+      if (activitiesRes.status === 401 || eventsRes.status === 401) {
+        isUnauthorized = true;
+        return;
+      }
 
       if (!activitiesRes.ok || !eventsRes.ok) {
         throw new Error('Failed to fetch data');
@@ -52,7 +60,10 @@
       console.error('Error fetching data:', err);
       error = err.message;
     } finally {
-      loading = false;
+      // Keep loading state if unauthorized (redirecting to login)
+      if (!isUnauthorized) {
+        loading = false;
+      }
     }
   }
 
