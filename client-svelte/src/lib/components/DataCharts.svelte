@@ -64,7 +64,7 @@
         labels: data.map((row) => row.date),
         datasets: [
           {
-            label: $m.totalReps,
+            label: `${$m.totalReps} (${totalReps})`,
             data: data.map((row) => row.reps),
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
             borderColor: 'rgba(75, 192, 192, 1)',
@@ -104,16 +104,6 @@
               weight: 'bold'
             }
           },
-          subtitle: {
-            display: true,
-            text: `Total: ${totalReps} reps`,
-            font: {
-              size: 16
-            },
-            padding: {
-              bottom: 10
-            }
-          },
           legend: {
             labels: {
               font: {
@@ -143,7 +133,7 @@
         labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
         datasets: [
           {
-            label: $m.repsPerEvent,
+            label: `${$m.repsPerEvent} (${totalReps})`,
             data: data,
             backgroundColor: 'rgba(153, 102, 255, 0.6)',
             borderColor: 'rgba(153, 102, 255, 1)',
@@ -179,16 +169,6 @@
             font: {
               size: 20,
               weight: 'bold'
-            }
-          },
-          subtitle: {
-            display: true,
-            text: `Total: ${totalReps} reps`,
-            font: {
-              size: 16
-            },
-            padding: {
-              bottom: 10
             }
           },
           legend: {
