@@ -482,3 +482,9 @@
     </div>
   {/if}
 </div>
+
+<style>
+  select {
+    font-weight: 400;
+  }
+</style>
