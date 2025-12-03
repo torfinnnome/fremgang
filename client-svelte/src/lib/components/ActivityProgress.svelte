@@ -77,7 +77,7 @@
     return completionDate.toISOString().slice(0, 10);
   }
 
-  function calculateProgress(activityId: number, period: 'all' | 'year' | 'month' | 'week') {
+  function calculateProgress(activityId: number, period: 'all' | 'year' | 'month' | 'week' | 'day') {
     const eventArray = Array.isArray(events) ? events : (events as any)?.events || [];
     const now = new Date();
     let startDate = new Date(0);
@@ -93,6 +93,10 @@
         const day = now.getDay();
         const diff = now.getDate() - day + (day === 0 ? -6 : 1);
         startDate = new Date(now.setDate(diff));
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      case 'day':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         startDate.setHours(0, 0, 0, 0);
         break;
       case 'all':
@@ -182,6 +186,7 @@
           <th style="padding: 0.5rem; text-align: left;">{$m.year}</th>
           <th style="padding: 0.5rem; text-align: left;">{$m.month}</th>
           <th style="padding: 0.5rem; text-align: left;">{$m.week}</th>
+          <th style="padding: 0.5rem; text-align: left;">{$m.day}</th>
           <th style="padding: 0.5rem; text-align: left;">{$m.estCompletion}</th>
           <th style="padding: 0.5rem; text-align: left;">{$m.actions}</th>
         </tr>
@@ -207,6 +212,7 @@
             <td style="padding: 0.5rem;">{calculateProgress(activity.id, 'year')}</td>
             <td style="padding: 0.5rem;">{calculateProgress(activity.id, 'month')}</td>
             <td style="padding: 0.5rem;">{calculateProgress(activity.id, 'week')}</td>
+            <td style="padding: 0.5rem;">{calculateProgress(activity.id, 'day')}</td>
             <td style="padding: 0.5rem;">{calculateEstimatedCompletion(activity.id)}</td>
             <td style="padding: 0.5rem;">
               {#if editingActivityId === activity.id}
@@ -260,6 +266,10 @@
           <div class="activity-card-row">
             <span class="activity-card-label">{$m.week}:</span>
             <span>{calculateProgress(activity.id, 'week')}</span>
+          </div>
+          <div class="activity-card-row">
+            <span class="activity-card-label">{$m.day}:</span>
+            <span>{calculateProgress(activity.id, 'day')}</span>
           </div>
           <div class="activity-card-row">
             <span class="activity-card-label">{$m.estCompletion}:</span>
