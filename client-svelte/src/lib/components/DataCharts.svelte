@@ -98,7 +98,7 @@
         plugins: {
           title: {
             display: true,
-            text: `${activityFilter ? allActivityNames[activityFilter] : 'All Activities'} - ${$m.workoutVolumeTitle}`,
+            text: `${activityFilter ? allActivityNames[activityFilter] : $m.allActivities} - ${$m.workoutVolumeTitle}`,
             font: {
               size: 20,
               weight: 'bold'
@@ -165,7 +165,7 @@
         plugins: {
           title: {
             display: true,
-            text: `${activityFilter ? allActivityNames[activityFilter] : 'All Activities'} - ${$m.timeOfDayTitle}`,
+            text: `${activityFilter ? allActivityNames[activityFilter] : $m.allActivities} - ${$m.timeOfDayTitle}`,
             font: {
               size: 20,
               weight: 'bold'
