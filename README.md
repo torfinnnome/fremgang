@@ -88,6 +88,42 @@ After building the application (see "Building for Production"), you can run the 
     ```
     This will start the Node.js server, which will serve the optimized frontend build. The application will be accessible at `http://localhost:3010` (or the port specified in `server/src/index.ts`).
 
+### Podman
+
+The application can be run in a container using Podman. The SQLite database is stored in a persistent volume, so data survives container restarts.
+
+**Prerequisites:**
+
+-   [Podman](https://podman.io/) installed
+-   [podman-compose](https://github.com/containers/podman-compose) installed
+
+**Build and run:**
+
+```bash
+# Build the image
+podman build -t fremgang .
+
+# Run using podman-compose (recommended, persists DB data)
+podman-compose -f podman-compose.yml up -d
+```
+
+**Or run manually:**
+
+```bash
+podman run -d --name fremgang -p 3010:3010 \
+  -v fremgang-data:/app/data \
+  -e DB_PATH=/app/data/db.sqlite \
+  fremgang
+```
+
+The application will be accessible at `http://localhost:3010`.
+
+**Stop and remove:**
+
+```bash
+podman-compose -f podman-compose.yml down
+```
+
 ### CLI Password Change
 
 To change a user's password via the command line:
