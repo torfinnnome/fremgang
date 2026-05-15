@@ -5,6 +5,7 @@ import path from 'path';
 import { db, initDatabase } from './database';
 import http from 'http';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
 const port = process.env.PORT || 3010;
@@ -15,6 +16,14 @@ initDatabase();
 // Middleware
 app.use(express.json());
 app.use(cors());
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+);
 
 const JWT_SECRET = 'asdfdslhaksdg.-asdf--asdfasdfads5252-sg'; // In production, use an environment variable
 
