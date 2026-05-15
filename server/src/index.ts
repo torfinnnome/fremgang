@@ -14,6 +14,7 @@ const port = process.env.PORT || 3010;
 initDatabase();
 
 // Middleware
+app.set('trust proxy', 1);
 app.use(express.json());
 app.use(cors());
 app.use(
